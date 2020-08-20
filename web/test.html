@@ -45,8 +45,6 @@
 
 
 <script>
-
-
 document.getElementById("demo").addEventListener("click", myFunction);
 function myFunction() {
   document.getElementById("demo").innerHTML = "YOU CLICKED ME!";
@@ -60,7 +58,7 @@ function btnclicked(){
 
 var ws;
 window.onload=function(){
-  ws=new WebSocket("ws://localhost:8080/echo");
+  ws=new WebSocket("ws://localhost:1234/echo");
   ws.onmessage=function(evt){
     console.log(evt.data);
     document.getElementById("message_from_srv").innerHTML = evt.data;

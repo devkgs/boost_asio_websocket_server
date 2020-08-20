@@ -13,7 +13,7 @@ void evt(const std::string msg_str, std::string &ret){
 int start_server() {
     // WebSocket (WS)-server at port 8080 using 1 thread
     WsServer server;
-    server.config.port = 8080;
+    server.config.port = 1234;
 
     // Example 1: echo WebSocket endpoint
     // Added debug messages for example use of the callbacks
@@ -22,7 +22,7 @@ int start_server() {
     //   ws.onmessage=function(evt){console.log(evt.data);};
     //   ws.send("test");
     auto &echo = server.endpoint["^/echo/?$"];
-
+    cout << "server started @"<<server.config.port <<endl;
     echo.on_message = [](shared_ptr<WsServer::Connection> connection, shared_ptr<WsServer::Message> message) {
         auto message_str = message->string();
         std::string ret;
