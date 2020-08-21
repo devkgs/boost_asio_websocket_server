@@ -10,6 +10,8 @@ void evt(const std::string msg_str, std::string &ret){
     ret = "fuck you form C++";
 }
 
+
+
 int start_server() {
     // WebSocket (WS)-server at port 8080 using 1 thread
     WsServer server;
