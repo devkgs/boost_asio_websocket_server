@@ -1,11 +1,11 @@
 #include "server_ws.hpp"
 #include "web_ws.hpp"
+//#include "messages_handler.h"
 using namespace std;
 
 using WsServer = SimpleWeb::SocketServer<SimpleWeb::WS>;
 
 void evt(const std::string msg_str, std::string &ret){
-
     cout << "event receive "<<msg_str<<endl;
     ret = "fuck you form C++";
 }
@@ -16,13 +16,6 @@ int start_server() {
     // WebSocket (WS)-server at port 8080 using 1 thread
     WsServer server;
     server.config.port = 1234;
-
-    // Example 1: echo WebSocket endpoint
-    // Added debug messages for example use of the callbacks
-    // Test with the following JavaScript:
-    //   var ws=new WebSocket("ws://localhost:8080/echo");
-    //   ws.onmessage=function(evt){console.log(evt.data);};
-    //   ws.send("test");
     auto &echo = server.endpoint["^/echo/?$"];
     cout << "server started @"<<server.config.port <<endl;
     echo.on_message = [](shared_ptr<WsServer::Connection> connection, shared_ptr<WsServer::Message> message) {
