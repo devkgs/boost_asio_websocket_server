@@ -32,29 +32,24 @@
   <p id="connection_status">?</p>
 </div>
 <div class="w3-container w3-border">
-  <p id="message_from_srv">?</p>
+  <p id="disp_robot_status">?</p>
 </div>
 <div class="w3-container w3-border">
   <p id="disp_bat_voltage">?</p>
 </div>
 <div class="w3-container w3-border">
-  <p id="msg2">?</p>
+  <p id="r">?</p>
 </div>
-
-
 <!-- End page content -->
 
 <!-- Page content scripts -->
 <script>
-
-
-
   <!-- communication -->
   var ws;
   window.onload=function(){
     ws=new WebSocket("ws://localhost:1234/echo");
     ws.onopen=function(evt){
-      ws.send("Hello from web");
+      ws.send("get_status");
       document.getElementById("connection_status").innerHTML = "Connected";
     }
     ws.onerror=function(evt){
@@ -64,7 +59,6 @@
     <!-- on received message -->
     ws.onmessage=function(evt){
       console.log(evt.data);
-      document.getElementById("message_from_srv").innerHTML = evt.data;
 
       <!-- parsing messages -->
       var res = evt.data.split(":");
@@ -72,22 +66,29 @@
       var msg_val1 = res[1];
       switch(msg_id) {
         case "bat_voltage":
-          console.log("bat voltage message ");
-          document.getElementById("disp_bat_voltage").innerHTML =msg_val1;
+          document.getElementById("disp_bat_voltage").innerHTML ="battery voltage: "+msg_val1;
           break;
+          case "status":
+            document.getElementById("disp_robot_status").innerHTML = "robot status: "+msg_val1;
+            break;
         default:
           console.log("unknown message ", res[0]);
       }
-
-
     };
   }
   window.onclose=function(){
     ws.close();
   }
 
+  window.setInterval(function(){
+    ws.send("get_bat_voltage");
+    ws.send("get_status");
+  }, 1000);
+
 </script>
 <!-- End page content scripts -->
+
+
 
 <footer class="w3-container w3-theme w3-margin-top w3-bottom">
   <h3>Footer</h3>

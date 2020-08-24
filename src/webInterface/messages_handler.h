@@ -6,8 +6,8 @@
 class messages_handler {
 
 public:
-    virtual void handle_message(const std::string msg_str, std::string &ret);
-
+    messages_handler(void);
+    void handle_message(const std::string msg_str, std::string &ret);
 
 };
 

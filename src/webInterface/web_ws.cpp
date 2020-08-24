@@ -1,8 +1,8 @@
 #include "server_ws.hpp"
 #include "web_ws.hpp"
-//#include "messages_handler.h"
+#include "messages_handler.h"
 using namespace std;
-
+messages_handler mh;
 using WsServer = SimpleWeb::SocketServer<SimpleWeb::WS>;
 
 void evt(const std::string msg_str, std::string &ret){
@@ -13,6 +13,7 @@ void evt(const std::string msg_str, std::string &ret){
 
 
 int start_server() {
+
     // WebSocket (WS)-server at port 8080 using 1 thread
     WsServer server;
     server.config.port = 1234;
@@ -20,9 +21,10 @@ int start_server() {
     cout << "server started @"<<server.config.port <<endl;
     echo.on_message = [](shared_ptr<WsServer::Connection> connection, shared_ptr<WsServer::Message> message) {
         auto message_str = message->string();
-        std::string ret;
-        evt(message_str, ret );
         cout << "Server: Message received: \"" << message_str << "\" from " << connection.get() << endl;
+        std::string ret;
+        //evt(message_str, ret );
+        mh.handle_message(message_str, ret);
 
 
         auto send_stream = make_shared<WsServer::SendStream>();
@@ -35,7 +37,7 @@ int start_server() {
                      "Error: " << ec << ", error message: " << ec.message() << endl;
             }
         });
-        cout << "Server: Sending message \"" << message_str << "\" to " << connection.get() << endl;
+        cout << "Server: Sending message \"" << ret << "\" to " << connection.get() << endl;
     };
 
     echo.on_open = [](shared_ptr<WsServer::Connection> connection) {
