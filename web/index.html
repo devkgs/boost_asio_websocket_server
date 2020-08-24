@@ -8,90 +8,102 @@
 <body>
 
 <nav class="w3-sidebar w3-bar-block w3-card" id="mySidebar">
-<div class="w3-container w3-theme-d2">
-  <span onclick="closeSidebar()" class="w3-button w3-display-topright w3-xxxlarge">X</span>
-  <br>
-  <div class="w3-padding w3-center">
-    <img class="w3-circle" src="logo.png" alt="ecorobotix" style="width:75%">
+  <div class="w3-container w3-theme-d2">
+    <span onclick="closeSidebar()" class="w3-button w3-display-topright w3-xxxlarge">X</span>
+    <br>
+    <div class="w3-padding w3-center">
+      <img class="w3-circle" src="robotlogo.png" alt="ecorobotix" style="width:75%">
+    </div>
   </div>
-</div>
-<a class="w3-bar-item w3-button" href="ruiStatus.html">Status</a>
-<a class="w3-bar-item w3-button" href="#">Debug</a>
-<a class="w3-bar-item w3-button" href="#">Power</a>
-<a class="w3-bar-item w3-button" href="test.html">Test</a>
+  <a class="w3-bar-item w3-button" href="index.html">Status</a>
+  <a class="w3-bar-item w3-button" href="control.html">Control</a>
+  <a class="w3-bar-item w3-button" href="mission.html">Mission</a>
+  <a class="w3-bar-item w3-button" href="test.html">Test</a>
 </nav>
 
 <header class="w3-bar w3-card w3-theme">
   <button class="w3-bar-item w3-button w3-xxxlarge w3-hover-theme" onclick="openSidebar()">&#9776;</button>
-  <h1 class="w3-bar-item">Index</h1>
+  <h1 class="w3-bar-item">Status</h1>
 </header>
 
 <!-- Start page content -->
 
-
-
 <div class="w3-container w3-border">
-<p id="connection_status">?</p>
+  <p id="connection_status">?</p>
 </div>
 <div class="w3-container w3-border">
-<p id="message_from_srv"> waiting for server answer</p>
+  <p id="disp_robot_status">?</p>
 </div>
 <div class="w3-container w3-border">
-<p id="demo">Click me.</p>
+  <p id="disp_bat_voltage">?</p>
 </div>
-<div class="w3-container">
-  <button onclick="btnclicked()">Click me</button>
+<div class="w3-container w3-border">
+  <p id="r">?</p>
 </div>
+<!-- End page content -->
 
-
+<!-- Page content scripts -->
 <script>
-document.getElementById("demo").addEventListener("click", myFunction);
-function myFunction() {
-  document.getElementById("demo").innerHTML = "YOU CLICKED ME!";
-}
+  <!-- communication -->
+  var ws;
+  window.onload=function(){
+    ws=new WebSocket("ws://localhost:1234/echo");
+    ws.onopen=function(evt){
+      ws.send("get_status");
+      document.getElementById("connection_status").innerHTML = "Connected";
+    }
+    ws.onerror=function(evt){
+      document.getElementById("connection_status").innerHTML = "Connection error";
+    }
 
-function btnclicked(){
-  document.getElementById("demo").innerHTML = "message sent";
-  ws.send("button clicked");
-}
+    <!-- on received message -->
+    ws.onmessage=function(evt){
+      console.log(evt.data);
 
-
-var ws;
-window.onload=function(){
-  ws=new WebSocket("ws://localhost:1234/echo");
-  ws.onmessage=function(evt){
-    console.log(evt.data);
-    document.getElementById("message_from_srv").innerHTML = evt.data;
+      <!-- parsing messages -->
+      var res = evt.data.split(":");
+      var msg_id = res[0];
+      var msg_val1 = res[1];
+      switch(msg_id) {
+        case "bat_voltage":
+          document.getElementById("disp_bat_voltage").innerHTML ="battery voltage: "+msg_val1;
+          break;
+          case "status":
+            document.getElementById("disp_robot_status").innerHTML = "robot status: "+msg_val1;
+            break;
+        default:
+          console.log("unknown message ", res[0]);
+      }
     };
-  ws.onopen=function(evt){
-    ws.send("Hello from web");
-    document.getElementById("connection_status").innerHTML = "Connected";
   }
-  ws.onerror=function(evt){
-    document.getElementById("connection_status").innerHTML = "Connection error";
+  window.onclose=function(){
+    ws.close();
   }
-  
-}
-window.onclose=function(){
-  ws.close();
-}  
+
+  window.setInterval(function(){
+    ws.send("get_bat_voltage");
+    ws.send("get_status");
+  }, 1000);
 
 </script>
-<!-- End page content -->
+<!-- End page content scripts -->
+
+
 
 <footer class="w3-container w3-theme w3-margin-top w3-bottom">
   <h3>Footer</h3>
 </footer>
-
+<!-- End page content -->
+<!-- Side bar scripts -->
 <script>
-closeSidebar();
-function openSidebar() {
-  document.getElementById("mySidebar").style.display = "block";
-}
+  closeSidebar();
+  function openSidebar() {
+    document.getElementById("mySidebar").style.display = "block";
+  }
 
-function closeSidebar() {
-  document.getElementById("mySidebar").style.display = "none";
-}
+  function closeSidebar() {
+    document.getElementById("mySidebar").style.display = "none";
+  }
 </script>
 
 </body>
