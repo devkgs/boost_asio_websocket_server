@@ -35,6 +35,9 @@
   <p id="disp_robot_status">?</p>
 </div>
 <div class="w3-container w3-border">
+  <p id="disp_avr_status">?</p>
+</div>
+<div class="w3-container w3-border">
   <p id="disp_robot_time">?</p>
 </div>
 
@@ -69,6 +72,9 @@
       var msg_id = res[0];
       var msg_val1 = res[1];
       switch(msg_id) {
+        case "avr_status":
+          document.getElementById("disp_avr_status").innerHTML = "arduino connected: "+msg_val1;
+          break;
         case "bat_voltage":
           document.getElementById("disp_bat_voltage").innerHTML ="battery voltage: "+msg_val1;
           break;
@@ -91,6 +97,7 @@
     ws.send("get_bat_voltage");
     ws.send("get_status");
     ws.send("get_time");
+    ws.send("get_avr_status");
   }, 1000);
 
 </script>

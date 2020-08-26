@@ -13,8 +13,10 @@ void messages_handler::handle_message(const std::string msg_str, std::string &re
     std::cout << "event receive "<<msg_str<<std::endl;
     if(msg_str.compare("get_bat_voltage")==0){
         ret = "bat_voltage:12.3 fake";
-    }else if (msg_str.compare("get_status")==0){
+    } else if (msg_str.compare("get_status")==0) {
         ret = "status:ok";
+    } else if (msg_str.compare("get_avr_status")==0) {
+        ret = "avr_status:false";
     } else if (msg_str.compare("mvfw")==0){
         ret = "mv:f";
     } else if (msg_str.compare("mvbw")== 0){
