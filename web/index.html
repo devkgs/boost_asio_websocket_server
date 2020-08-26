@@ -16,7 +16,7 @@
     </div>
   </div>
   <a class="w3-bar-item w3-button" href="index.html">Status</a>
-  <a class="w3-bar-item w3-button" href="control.html">Control</a>
+  <a class="w3-bar-item w3-button" href="control.html">Controls</a>
   <a class="w3-bar-item w3-button" href="mission.html">Mission</a>
   <a class="w3-bar-item w3-button" href="test.html">Test</a>
 </nav>
@@ -34,6 +34,10 @@
 <div class="w3-container w3-border">
   <p id="disp_robot_status">?</p>
 </div>
+<div class="w3-container w3-border">
+  <p id="disp_robot_time">?</p>
+</div>
+
 <div class="w3-container w3-border">
   <p id="disp_bat_voltage">?</p>
 </div>
@@ -71,6 +75,9 @@
           case "status":
             document.getElementById("disp_robot_status").innerHTML = "robot status: "+msg_val1;
             break;
+            case "time":
+              document.getElementById("disp_robot_time").innerHTML = "time: "+msg_val1;
+              break;
         default:
           console.log("unknown message ", res[0]);
       }
@@ -83,6 +90,7 @@
   window.setInterval(function(){
     ws.send("get_bat_voltage");
     ws.send("get_status");
+    ws.send("get_time");
   }, 1000);
 
 </script>

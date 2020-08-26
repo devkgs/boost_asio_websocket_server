@@ -5,13 +5,6 @@ using namespace std;
 messages_handler mh;
 using WsServer = SimpleWeb::SocketServer<SimpleWeb::WS>;
 
-void evt(const std::string msg_str, std::string &ret){
-    cout << "event receive "<<msg_str<<endl;
-    ret = "fuck you form C++";
-}
-
-
-
 int start_server() {
 
     // WebSocket (WS)-server at port 8080 using 1 thread
